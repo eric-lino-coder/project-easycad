@@ -11,6 +11,7 @@ import {
   Alert,
 } from "@mui/material";
 import { useState } from "react";
+import { backendUrl } from "../lib/api";
 
 interface Props {
   isOpen: boolean;
@@ -35,13 +36,10 @@ export default function ModalDelete({ isOpen, onClose, usuario }: Props) {
 
     setLoading(true);
     try {
-      const res = await fetch(
-        `http://localhost:5000/api/contatos/${usuario.id}`,
-        {
-          method: "DELETE",
-          cache: "no-store",
-        },
-      );
+      const res = await fetch(backendUrl(`/api/contatos/${usuario.id}`), {
+        method: "DELETE",
+        cache: "no-store",
+      });
 
       if (!res.ok) throw new Error("Falha na requisição");
 

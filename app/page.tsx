@@ -21,6 +21,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModalCadastro from "./components/ModalCadastro";
 import ModalEditUser from "./components/ModalUpdateUser";
+import { backendUrl } from "./lib/api";
 
 export default function Page() {
   const [usuarios, setUsuarios] = useState<any[]>([]);
@@ -55,7 +56,7 @@ export default function Page() {
   const carregarUsuarios = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://localhost:5000/api/contatos", {
+      const response = await fetch(backendUrl("/api/contatos"), {
         cache: "no-store",
       });
       if (!response.ok) throw new Error("Falha ao buscar usuários");
@@ -102,8 +103,10 @@ export default function Page() {
     if (!usuarioParaExcluir?.id) return;
     try {
       const response = await fetch(
-        `http://localhost:5000/api/contatos/${usuarioParaExcluir.id}`,
-        { method: "DELETE" },
+        backendUrl(`/api/contatos/${usuarioParaExcluir.id}`),
+        {
+          method: "DELETE",
+        },
       );
       if (!response.ok) {
         const text = await response.text();

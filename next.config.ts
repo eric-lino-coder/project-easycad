@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  env: {
+    BASE_URL_BACK_END: process.env.BASE_URL_BACK_END,
+  },
 };
 
 export default nextConfig;

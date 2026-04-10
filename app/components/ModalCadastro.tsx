@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { z } from "zod";
+import { backendUrl } from "../lib/api";
 
 import {
   maskCPF,
@@ -61,13 +62,21 @@ const userSchema = z.object({
     .min(1, "CPF é obrigatório")
     .refine(validarCPF, "CPF inválido"),
   rg: z.string().optional(),
-  nascimento: z.string().min(1, "Data de nascimento é obrigatória"),
-  sexo: z.enum(["Masculino", "Feminino"], {
-    required_error: "Sexo é obrigatório",
+  nascimento: z.string().refine((date) => !isNaN(Date.parse(date)), {
+    message: "Data inválida",
   }),
-  estadoCivil: z.enum(["Solteiro(a)", "Casado(a)", "Viúvo(a)"], {
-    required_error: "Estado civil é obrigatório",
-  }),
+  sexo: z
+    .string()
+    .min(1, "Sexo é obrigatório")
+    .refine((val) => ["Masculino", "Feminino"].includes(val), {
+      message: "Sexo inválido",
+    }),
+  estadoCivil: z
+    .string()
+    .min(1, "Estado civil é obrigatório")
+    .refine((val) => ["Solteiro(a)", "Casado(a)", "Viúvo(a)"].includes(val), {
+      message: "Estado civil inválido",
+    }),
   email: z.string().email("E-mail inválido"),
   celular: z.string().min(1, "Celular é obrigatório"),
   fixo: z.string().optional(),
@@ -75,14 +84,16 @@ const userSchema = z.object({
   logradouro: z.string().min(1, "Logradouro é obrigatório"),
   numero: z.string().min(1, "Número é obrigatório"),
   bairro: z.string().min(1, "Bairro é obrigatório"),
-  cidade: z.string().min(1, "Cidade é obrigatória"),
+  cidade: z.string().min(1, "Cidade é obrigatório"),
+  // Correção aqui: encadeamento contínuo
   estado: z
     .string()
     .min(1, "Estado é obrigatório")
     .max(2, "Estado deve ter 2 letras"),
+
   complemento: z.string().optional(),
   pais: z.string().min(1, "País é obrigatório"),
-  linkedin: z.string().min(1, "LinkedIn é obrigatório"),
+  linkedin: z.string().url("LinkedIn inválido"),
 });
 
 export default function ModalCadastro({ isOpen, onClose }: ModalProps) {
@@ -131,9 +142,6 @@ export default function ModalCadastro({ isOpen, onClose }: ModalProps) {
     const result = userSchema.safeParse(form);
     if (!result.success) {
       const newErrors: Record<string, string> = {};
-      result.error.errors.forEach((err) => {
-        newErrors[err.path[0] as string] = err.message;
-      });
       setErrors(newErrors);
       return false;
     }
@@ -149,7 +157,7 @@ export default function ModalCadastro({ isOpen, onClose }: ModalProps) {
     }
 
     try {
-      const res = await fetch("http://localhost:5000/api/contatos", {
+      const res = await fetch(backendUrl("/api/contatos"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),

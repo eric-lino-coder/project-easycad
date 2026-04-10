@@ -20,6 +20,7 @@ import {
 import Grid from "@mui/material/Grid"; // Usando Grid para suporte ao 'size' do MUI v6
 import CloseIcon from "@mui/icons-material/Close";
 import { z } from "zod";
+import { backendUrl } from "../lib/api";
 import {
   maskCPF,
   maskCEP,
@@ -36,6 +37,7 @@ interface Props {
 }
 
 interface UserForm {
+  id: string;
   nome: string;
   cpf: string;
   rg: string;
@@ -64,12 +66,18 @@ const userSchema = z.object({
     .refine(validarCPF, "CPF inválido"),
   rg: z.string().optional(),
   nascimento: z.string().min(1, "Data de nascimento é obrigatória"),
-  sexo: z.enum(["Masculino", "Feminino"], {
-    required_error: "Sexo é obrigatório",
-  }),
-  estadoCivil: z.enum(["Solteiro(a)", "Casado(a)", "Viúvo(a)"], {
-    required_error: "Estado civil é obrigatório",
-  }),
+  sexo: z
+    .string()
+    .min(1, "Sexo é obrigatório")
+    .refine((val) => ["Masculino", "Feminino"].includes(val), {
+      message: "Sexo inválido",
+    }),
+  estadoCivil: z
+    .string()
+    .min(1, "Estado civil é obrigatório")
+    .refine((val) => ["Solteiro(a)", "Casado(a)", "Viúvo(a)"].includes(val), {
+      message: "Estado civil inválido",
+    }),
   email: z.string().email("E-mail inválido"),
   celular: z.string().min(1, "Celular é obrigatório"),
   fixo: z.string().optional(),
@@ -89,6 +97,7 @@ const userSchema = z.object({
 
 export default function ModalEditUser({ isOpen, onClose, usuario }: Props) {
   const [form, setForm] = useState<UserForm>({
+    id: "",
     nome: "",
     cpf: "",
     rg: "",
@@ -158,9 +167,6 @@ export default function ModalEditUser({ isOpen, onClose, usuario }: Props) {
     const result = userSchema.safeParse(form);
     if (!result.success) {
       const newErrors: Record<string, string> = {};
-      result.error.errors.forEach((err) => {
-        newErrors[err.path[0] as string] = err.message;
-      });
       setErrors(newErrors);
       return false;
     }
@@ -196,7 +202,7 @@ export default function ModalEditUser({ isOpen, onClose, usuario }: Props) {
         linkedin: form.linkedin,
       };
 
-      const res = await fetch(`http://localhost:5000/api/contatos/${form.id}`, {
+      const res = await fetch(backendUrl(`/api/contatos/${form.id}`), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
