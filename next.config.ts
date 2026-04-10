@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   env: {
-    BASE_URL_BACK_END: process.env.BASE_URL_BACK_END,
+    NEXT_PUBLIC_BASE_URL_BACK_END: process.env.NEXT_PUBLIC_BASE_URL_BACK_END,
   },
 };
 

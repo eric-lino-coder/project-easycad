@@ -1,4 +1,4 @@
-const rawBaseUrl = process.env.BASE_URL_BACK_END;
+const rawBaseUrl = process.env.NEXT_PUBLIC_BASE_URL_BACK_END;
 export const BACKEND_BASE_URL = rawBaseUrl;
 
 export const backendUrl = (path: string) =>
