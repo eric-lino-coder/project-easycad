@@ -21,7 +21,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import ModalCadastro from "./components/ModalCadastro";
 import ModalEditUser from "./components/ModalUpdateUser";
-import { backendUrl } from "./lib/api";
+import { BACKEND_BASE_URL, backendUrl } from "./lib/api";
 
 export default function Page() {
   const [usuarios, setUsuarios] = useState<any[]>([]);
@@ -56,6 +56,7 @@ export default function Page() {
   const carregarUsuarios = async () => {
     setLoading(true);
     try {
+      console.log("BACKEND_BASE_URL", BACKEND_BASE_URL);
       const response = await fetch(backendUrl("/api/contatos"), {
         cache: "no-store",
       });
