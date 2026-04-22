@@ -275,10 +275,14 @@ export default function ModalCadastro({ isOpen, onClose }: ModalProps) {
               <TextField
                 fullWidth
                 type="date"
-                label="Data de Nascimento"
                 value={form.nascimento}
                 {...getErrorProps("nascimento")}
                 onChange={(e) => handleChange("nascimento", e.target.value)}
+                slotProps={{
+                  htmlInput: {
+                    placeholder: "Data de Nascimento",
+                  },
+                }}
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 2 }}>
