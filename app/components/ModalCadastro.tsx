@@ -2,20 +2,6 @@
 
 import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid"; // Usando Grid2 para suporte ao 'size' do MUI v6
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
-  Typography,
-  IconButton,
-  Snackbar,
-  Alert,
-  Divider,
-  MenuItem,
-} from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { z } from "zod";
 import { backendUrl } from "../lib/api";
@@ -28,6 +14,20 @@ import {
   maskApenasLetras,
   maskApenasNumeros,
 } from "./masks";
+import {
+  Dialog,
+  DialogTitle,
+  IconButton,
+  DialogContent,
+  Typography,
+  TextField,
+  MenuItem,
+  Divider,
+  DialogActions,
+  Button,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 
 interface ModalProps {
   isOpen: boolean;
@@ -142,6 +142,9 @@ export default function ModalCadastro({ isOpen, onClose }: ModalProps) {
     const result = userSchema.safeParse(form);
     if (!result.success) {
       const newErrors: Record<string, string> = {};
+      result.error.issues.forEach((issue) => {
+        newErrors[issue.path[0] as string] = issue.message;
+      });
       setErrors(newErrors);
       return false;
     }
@@ -273,7 +276,6 @@ export default function ModalCadastro({ isOpen, onClose }: ModalProps) {
                 fullWidth
                 type="date"
                 label="Data de Nascimento"
-                InputLabelProps={{ shrink: true }}
                 value={form.nascimento}
                 {...getErrorProps("nascimento")}
                 onChange={(e) => handleChange("nascimento", e.target.value)}
@@ -401,7 +403,6 @@ export default function ModalCadastro({ isOpen, onClose }: ModalProps) {
                 label="Estado"
                 value={form.estado}
                 {...getErrorProps("estado")}
-                inputProps={{ maxLength: 2 }}
                 onChange={(e) =>
                   handleChange("estado", e.target.value.toUpperCase())
                 }

@@ -1,20 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import {
-  Box,
-  Snackbar,
-  Typography,
-  Button,
-  Paper,
-  IconButton,
-  Alert,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Pagination,
-} from "@mui/material";
+
 import Grid from "@mui/material/Grid"; // Grid v7 (size/xs via componente Grid)
 import AddIcon from "@mui/icons-material/Add";
 import EditIcon from "@mui/icons-material/Edit";
@@ -22,6 +9,20 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import ModalCadastro from "./components/ModalCadastro";
 import ModalEditUser from "./components/ModalUpdateUser";
 import { BACKEND_BASE_URL, backendUrl } from "./lib/api";
+import {
+  Box,
+  Paper,
+  Typography,
+  Button,
+  IconButton,
+  Pagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Snackbar,
+  Alert,
+} from "@mui/material";
 
 export default function Page() {
   const [usuarios, setUsuarios] = useState<any[]>([]);
@@ -208,7 +209,7 @@ export default function Page() {
                   "&:hover": { opacity: 0.9, transform: "scale(1.002)" },
                 }}
               >
-                <Grid container spacing={2} alignItems="center" sx={{ px: 2 }}>
+                <Grid container spacing={2} sx={{ px: 2 }}>
                   {/* COLUNA NOME */}
                   <Grid size={{ xs: 12, sm: 6, md: 5 }}>
                     <Typography

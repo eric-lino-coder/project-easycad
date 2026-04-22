@@ -1,23 +1,24 @@
 "use client"; // Adicione no topo para o ThemeProvider funcionar
 import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
+
+import PeopleIcon from "@mui/icons-material/People";
+import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import theme from "./theme";
+import { ThemeProvider } from "@emotion/react";
 import {
-  ThemeProvider,
-  Box,
   CssBaseline,
+  Box,
   AppBar,
   Toolbar,
   Typography,
+  IconButton,
   Drawer,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  IconButton,
 } from "@mui/material";
-import PeopleIcon from "@mui/icons-material/People";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import theme from "./theme";
 
 const drawerWidth = 240;
 
