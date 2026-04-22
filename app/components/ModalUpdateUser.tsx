@@ -167,6 +167,9 @@ export default function ModalEditUser({ isOpen, onClose, usuario }: Props) {
     const result = userSchema.safeParse(form);
     if (!result.success) {
       const newErrors: Record<string, string> = {};
+      result.error.issues.forEach((issue) => {
+        newErrors[issue.path[0] as string] = issue.message;
+      });
       setErrors(newErrors);
       return false;
     }
@@ -287,7 +290,6 @@ export default function ModalEditUser({ isOpen, onClose, usuario }: Props) {
                 fullWidth
                 type="date"
                 label="Data de Nascimento"
-                InputLabelProps={{ shrink: true }}
                 value={form.nascimento || ""}
                 {...getErrorProps("nascimento")}
                 onChange={(e) => handleChange("nascimento", e.target.value)}
@@ -412,7 +414,6 @@ export default function ModalEditUser({ isOpen, onClose, usuario }: Props) {
                 label="Estado"
                 value={form.estado || ""}
                 {...getErrorProps("estado")}
-                inputProps={{ maxLength: 2 }}
                 onChange={(e) =>
                   handleChange("estado", e.target.value.toUpperCase())
                 }
