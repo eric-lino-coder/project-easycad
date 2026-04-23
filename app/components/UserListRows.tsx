@@ -39,37 +39,44 @@ export default function UserListRows({
 
   return (
     <>
-      {/* Column Headers */}
-      <Box sx={{ px: 2, py: 1, backgroundColor: "#f5f5f5" }}>
-        <Grid container spacing={2}>
-          <Grid size={{ xs: 12, sm: 6, md: 5 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-              NOME
-            </Typography>
-          </Grid>
-          <Grid size={{ xs: 6, sm: 3, md: 2 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-              CPF
-            </Typography>
-          </Grid>
-          <Grid size={{ xs: 6, sm: 3, md: 3 }}>
-            <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-              E-MAIL
-            </Typography>
-          </Grid>
-          <Grid
-            size={{ xs: 12, sm: 12, md: 2 }}
-            sx={{ textAlign: { xs: "left", md: "right" } }}
-          >
-            <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
-              AÇÕES
-            </Typography>
-          </Grid>
-        </Grid>
-      </Box>
-
-      {/* Rows */}
+      {/* Table */}
       <Box sx={{ p: 2, flex: 1, overflow: "auto" }}>
+        <Box
+          sx={{
+            px: 2,
+            py: 1,
+            mb: 0.8,
+            backgroundColor: "#f5f5f5",
+            borderRadius: "10px",
+          }}
+        >
+          <Grid container spacing={2}>
+            <Grid size={{ xs: 12, sm: 6, md: 5 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                NOME
+              </Typography>
+            </Grid>
+            <Grid size={{ xs: 6, sm: 3, md: 2 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                CPF
+              </Typography>
+            </Grid>
+            <Grid size={{ xs: 6, sm: 3, md: 3 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                E-MAIL
+              </Typography>
+            </Grid>
+            <Grid
+              size={{ xs: 12, sm: 12, md: 2 }}
+              sx={{ textAlign: { xs: "left", md: "right" } }}
+            >
+              <Typography variant="subtitle2" sx={{ fontWeight: "bold" }}>
+                AÇÕES
+              </Typography>
+            </Grid>
+          </Grid>
+        </Box>
+
         {usuarios.map((user, index) => (
           <Box
             key={user.id}
@@ -86,7 +93,10 @@ export default function UserListRows({
           >
             <Grid container spacing={2} sx={{ px: 2 }}>
               {/* Name Column */}
-              <Grid size={{ xs: 12, sm: 6, md: 5 }}>
+              <Grid
+                size={{ xs: 12, sm: 3, md: 5 }}
+                sx={{ alignContent: "center" }}
+              >
                 <Typography
                   sx={{
                     fontWeight: "bold",
@@ -99,12 +109,18 @@ export default function UserListRows({
               </Grid>
 
               {/* CPF Column */}
-              <Grid size={{ xs: 6, sm: 3, md: 2 }}>
+              <Grid
+                size={{ xs: 6, sm: 3, md: 2 }}
+                sx={{ alignContent: "center" }}
+              >
                 <Typography sx={{ fontSize: "0.9rem" }}>{user.cpf}</Typography>
               </Grid>
 
               {/* Email Column */}
-              <Grid size={{ xs: 6, sm: 3, md: 3 }}>
+              <Grid
+                size={{ xs: 6, sm: 3, md: 3 }}
+                sx={{ alignContent: "center" }}
+              >
                 <Typography
                   sx={{
                     fontSize: "0.9rem",

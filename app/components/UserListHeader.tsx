@@ -17,7 +17,6 @@ export default function UserListHeader({ onAddUser }: UserListHeaderProps) {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        borderBottom: "1px solid #e0e0e0",
       }}
     >
       <Typography variant="h5" sx={{ fontWeight: "bold" }}>
