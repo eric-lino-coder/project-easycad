@@ -1,6 +1,15 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: "/",
+        destination: "/users",
+        permanent: false,
+      },
+    ];
+  },
   env: {
     NEXT_PUBLIC_BASE_URL_BACK_END: process.env.NEXT_PUBLIC_BASE_URL_BACK_END,
   },
