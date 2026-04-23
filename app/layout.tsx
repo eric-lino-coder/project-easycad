@@ -1,26 +1,14 @@
-"use client"; // Adicione no topo para o ThemeProvider funcionar
-import { AppRouterCacheProvider } from "@mui/material-nextjs/v14-appRouter";
+import type { Metadata } from "next";
+import ClientProviders from "./ClientProviders";
+import LayoutContent from "./LayoutContent";
 
-import PeopleIcon from "@mui/icons-material/People";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import theme from "./theme";
-import { ThemeProvider } from "@emotion/react";
-import {
-  CssBaseline,
-  Box,
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  Drawer,
-  List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-} from "@mui/material";
-
-const drawerWidth = 240;
+export const metadata: Metadata = {
+  title: "EasyCAD",
+  description: "Sistema de Gestão de Cadastros",
+  icons: {
+    icon: "/favicon.png",
+  },
+};
 
 export default function RootLayout({
   children,
@@ -29,69 +17,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-br">
-      <body style={{ overflow: "hidden" }}>
-        <AppRouterCacheProvider>
-          <ThemeProvider theme={theme}>
-            <CssBaseline /> {/* Isso aplica o reset de CSS do MUI */}
-            <Box sx={{ display: "flex" }}>
-              {/* HEADER */}
-              <AppBar
-                position="fixed"
-                sx={{ zIndex: (t) => t.zIndex.drawer + 1 }}
-              >
-                <Toolbar sx={{ justifyContent: "space-between" }}>
-                  <Typography variant="h6">EASYCAD</Typography>
-                  <IconButton
-                    color="inherit"
-                    sx={{ p: 0.5 }}
-                    aria-label="usuário"
-                  >
-                    <AccountCircleIcon sx={{ fontSize: 50 }} />
-                  </IconButton>
-                </Toolbar>
-              </AppBar>
-
-              {/* SIDEBAR */}
-              <Drawer
-                variant="permanent"
-                sx={{
-                  width: drawerWidth,
-                  flexShrink: 0,
-                  [`& .MuiDrawer-paper`]: {
-                    width: drawerWidth,
-                    boxSizing: "border-box",
-                  },
-                }}
-              >
-                <Toolbar /> {/* Espaçador para não cobrir o menu */}
-                <List>
-                  <ListItem disablePadding>
-                    <ListItemButton sx={{ color: "white" }}>
-                      <ListItemIcon sx={{ color: "white" }}>
-                        <PeopleIcon />
-                      </ListItemIcon>
-                      <ListItemText primary="Usuários" />
-                    </ListItemButton>
-                  </ListItem>
-                </List>
-              </Drawer>
-
-              {/* CONTEÚDO PRINCIPAL */}
-              <Box
-                component="main"
-                sx={{
-                  flexGrow: 1,
-                  p: 3,
-                  mt: 8,
-                  height: "calc(100vh - 64px)",
-                  overflow: "hidden",
-                }}
-              >
-                {children}
-              </Box>
-            </Box>
-          </ThemeProvider>
-        </AppRouterCacheProvider>
+      <head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </head>
+      <body style={{ overflow: "hidden", margin: 0 }}>
+        <ClientProviders>
+          <LayoutContent>{children}</LayoutContent>
+        </ClientProviders>
       </body>
     </html>
   );
