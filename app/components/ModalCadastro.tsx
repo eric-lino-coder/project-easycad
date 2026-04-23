@@ -322,7 +322,7 @@ export default function ModalCadastro({ isOpen, onClose }: ModalProps) {
                 onChange={(e) => handleChange("email", e.target.value)}
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 2 }}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
                 fullWidth
                 label="Celular"
@@ -333,7 +333,7 @@ export default function ModalCadastro({ isOpen, onClose }: ModalProps) {
                 }
               />
             </Grid>
-            <Grid size={{ xs: 12, sm: 2 }}>
+            <Grid size={{ xs: 12, sm: 4 }}>
               <TextField
                 fullWidth
                 label="Fixo (Opcional)"
