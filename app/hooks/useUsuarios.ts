@@ -35,7 +35,7 @@ export function useUsuarios(): UseUsuariosReturn {
         throw new Error(errorMsg);
       }
 
-      const apiUrl = backendUrl("/api/contatos");
+      const apiUrl = backendUrl("/api/users");
       console.log("📡 Buscando usuários em:", apiUrl);
 
       const response = await fetch(apiUrl, {
@@ -55,8 +55,8 @@ export function useUsuarios(): UseUsuariosReturn {
       }
 
       const data = await response.json();
-      console.log("✅ Usuários carregados:", data.contatos?.length || 0);
-      setUsuarios(data.contatos || []);
+      console.log("✅ Usuários carregados:", data.users?.length || 0);
+      setUsuarios(data.users || []);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Erro desconhecido";
@@ -68,7 +68,7 @@ export function useUsuarios(): UseUsuariosReturn {
       console.log(
         "%c💡 Verifique:",
         "color: blue; font-weight: bold;",
-        "\n1. Backend está rodando? (npm run dev no projeto backend)\n2. .env.local tem NEXT_PUBLIC_BASE_URL_BACK_END correto?\n3. URL do backend está acessível?\n4. Endpoint /api/contatos existe?",
+        "\n1. Backend está rodando? (npm run dev no projeto backend)\n2. .env.local tem NEXT_PUBLIC_BASE_URL_BACK_END correto?\n3. URL do backend está acessível?\n4. Endpoint /api/users existe?",
       );
       setUsuarios([]);
       showSnackbar(`❌ Erro: ${errorMessage}`, "error");
@@ -80,7 +80,7 @@ export function useUsuarios(): UseUsuariosReturn {
   const excluirUsuario = useCallback(
     async (id: string) => {
       try {
-        const response = await fetch(backendUrl(`/api/contatos/${id}`), {
+        const response = await fetch(backendUrl(`/api/users/${id}`), {
           method: "DELETE",
         });
 

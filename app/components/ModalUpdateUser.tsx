@@ -205,7 +205,7 @@ export default function ModalEditUser({ isOpen, onClose, usuario }: Props) {
         linkedin: form.linkedin,
       };
 
-      const res = await fetch(backendUrl(`/api/contatos/${form.id}`), {
+      const res = await fetch(backendUrl(`/api/users/${form.id}`), {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

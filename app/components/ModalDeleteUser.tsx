@@ -36,7 +36,7 @@ export default function ModalDelete({ isOpen, onClose, usuario }: Props) {
 
     setLoading(true);
     try {
-      const res = await fetch(backendUrl(`/api/contatos/${usuario.id}`), {
+      const res = await fetch(backendUrl(`/api/users/${usuario.id}`), {
         method: "DELETE",
         cache: "no-store",
       });
