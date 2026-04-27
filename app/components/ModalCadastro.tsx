@@ -98,24 +98,24 @@ const userSchema = z.object({
 
 export default function ModalCadastro({ isOpen, onClose }: ModalProps) {
   const initialState: UserForm = {
-    nome: "",
-    cpf: "",
-    nascimento: "",
-    rg: "",
-    sexo: "",
-    estadoCivil: "",
-    pais: "",
-    estado: "",
-    cidade: "",
-    bairro: "",
-    cep: "",
-    logradouro: "",
-    numero: "",
-    complemento: "",
-    celular: "",
-    fixo: "",
-    email: "",
-    linkedin: "",
+    nome: "testetste",
+    cpf: "607.512.240-06",
+    nascimento: "29/06/2004",
+    rg: "607.512.240-06",
+    sexo: "M",
+    estadoCivil: "S",
+    pais: "teste",
+    estado: "ts",
+    cidade: "test",
+    bairro: "tesladiario",
+    cep: "00000-000",
+    logradouro: "alameda teste",
+    numero: "09999",
+    complemento: "test do test",
+    celular: "11 99999-9999",
+    fixo: "00000-0000",
+    email: "test@test.com",
+    linkedin: "https://www.linkedin.com/in/teste",
   };
 
   const [form, setForm] = useState<UserForm>(initialState);
@@ -160,7 +160,7 @@ export default function ModalCadastro({ isOpen, onClose }: ModalProps) {
     }
 
     try {
-      const res = await fetch(backendUrl("/api/contatos"), {
+      const res = await fetch(backendUrl("/api/users"), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
