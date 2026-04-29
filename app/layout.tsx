@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import ClientProviders from "./ClientProviders";
-import LayoutContent from "./LayoutContent";
 
 export const metadata: Metadata = {
   title: "EasyCAD",
@@ -22,9 +21,7 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </head>
       <body style={{ overflow: "hidden", margin: 0 }}>
-        <ClientProviders>
-          <LayoutContent>{children}</LayoutContent>
-        </ClientProviders>
+        <ClientProviders>{children}</ClientProviders>
       </body>
     </html>
   );
