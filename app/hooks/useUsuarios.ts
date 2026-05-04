@@ -5,6 +5,7 @@
 import { useState, useCallback } from "react";
 import { Usuario, SnackbarState } from "@/app/types";
 import { BACKEND_BASE_URL, backendUrl } from "@/app/lib/api";
+import axiosApi from "../axios";
 
 interface UseUsuariosReturn {
   usuarios: Usuario[];
@@ -36,13 +37,10 @@ export function useUsuarios(): UseUsuariosReturn {
       }
 
       const apiUrl = backendUrl("/api/users");
-      console.log("📡 Buscando usuários em:", apiUrl);
 
-      const response = await fetch(apiUrl, {
-        cache: "no-store",
-      });
+      const response = await axiosApi.get(apiUrl);
 
-      if (!response.ok) {
+      if (!response.data) {
         console.error(
           `❌ Erro ${response.status}:`,
           response.statusText,
@@ -54,7 +52,7 @@ export function useUsuarios(): UseUsuariosReturn {
         );
       }
 
-      const data = await response.json();
+      const { data } = response;
       console.log("✅ Usuários carregados:", data.users?.length || 0);
       setUsuarios(data.users || []);
     } catch (error) {
@@ -80,14 +78,7 @@ export function useUsuarios(): UseUsuariosReturn {
   const excluirUsuario = useCallback(
     async (id: string) => {
       try {
-        const response = await fetch(backendUrl(`/api/users/${id}`), {
-          method: "DELETE",
-        });
-
-        if (!response.ok) {
-          const text = await response.text();
-          throw new Error(text || "Falha ao excluir usuário");
-        }
+        const response = await axiosApi.delete(backendUrl(`/api/users/${id}`));
 
         await carregarUsuarios();
         showSnackbar("Usuário excluído com sucesso", "success");

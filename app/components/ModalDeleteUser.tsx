@@ -12,6 +12,8 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { backendUrl } from "../lib/api";
+import axios from "axios";
+import axiosApi from "../axios";
 
 interface Props {
   isOpen: boolean;
@@ -36,25 +38,27 @@ export default function ModalDelete({ isOpen, onClose, usuario }: Props) {
 
     setLoading(true);
     try {
-      const res = await fetch(backendUrl(`/api/users/${usuario.id}`), {
-        method: "DELETE",
-        cache: "no-store",
+      await axiosApi.delete(backendUrl(`/api/users/${usuario.id}`), {
+        headers: { "Cache-Control": "no-store" }, // equivalente ai cache: "no-store" do
       });
-
-      if (!res.ok) throw new Error("Falha na requisição");
-
       setSnackbar({
         open: true,
         message: "Usuário deletado com sucesso!",
         severity: "success",
       });
-
       // 3°Aguarda o feedback visual antes de fechar o modal
       setTimeout(() => {
         onClose(true); // O parâmetro 'true' avisa o componente pai para recarregar a lista
       }, 1000);
     } catch (error) {
-      console.error("Erro ao deletar:", error);
+      if (axios.isAxiosError(error)) {
+        console.error(
+          "Erro na requisição:",
+          error.response?.data || error.message,
+        );
+      } else {
+        console.error("Erro ao deletar:", error);
+      }
       setSnackbar({
         open: true,
         message: "Erro ao deletar usuário.",

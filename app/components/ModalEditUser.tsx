@@ -28,6 +28,8 @@ import {
   maskApenasLetras,
   maskApenasNumeros,
 } from "./masks";
+import axios from "axios";
+import axiosApi from "../axios";
 
 interface Props {
   isOpen: boolean;
@@ -114,17 +116,21 @@ export default function ModalEditUser({ isOpen, onClose, usuario }: Props) {
 
     try {
       // Ajustado para PUT e enviando os dados do formulário
-      const res = await fetch(`/api/usuarios`, {
-        method: "PUT",
+      await axiosApi.put(`/api/usuarios`, form, {
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
       });
-
-      if (!res.ok) throw new Error();
 
       showSnackbar("Dados atualizados com sucesso.", "success");
       setTimeout(() => onClose(true), 1500);
-    } catch {
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error(
+          "Erro na requisição:",
+          error.response?.data || error.message,
+        );
+      } else {
+        console.error("Erro ao atualizar dados:", error);
+      }
       showSnackbar("Erro ao atualizar dados no servidor.", "error");
     }
   };
