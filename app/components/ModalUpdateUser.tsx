@@ -29,6 +29,7 @@ import {
   maskApenasLetras,
   maskApenasNumeros,
 } from "./masks";
+import axiosApi from "../axios";
 
 interface Props {
   isOpen: boolean;
@@ -205,18 +206,13 @@ export default function ModalEditUser({ isOpen, onClose, usuario }: Props) {
         linkedin: form.linkedin,
       };
 
-      const res = await fetch(backendUrl(`/api/users/${form.id}`), {
-        method: "PUT",
+      await axiosApi.put(backendUrl(`/api/users/${form.id}`), payload, {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error();
-
       showSnackbar("Usuário atualizado com sucesso.", "success");
-      setTimeout(() => onClose(true), 1500);
     } catch (error) {
       console.error(error);
       showSnackbar("Erro ao atualizar usuário.", "error");
