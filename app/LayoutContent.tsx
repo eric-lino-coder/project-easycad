@@ -20,7 +20,12 @@ import {
   ListItemButton,
   ListItemIcon,
   ListItemText,
+  Menu,
+  MenuItem,
 } from "@mui/material";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import axiosApi from "./axios";
 
 const DRAWER_WIDTH = 240;
 
@@ -29,6 +34,27 @@ interface LayoutContentProps {
 }
 
 export default function LayoutContent({ children }: LayoutContentProps) {
+  const router = useRouter();
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleLogout = async () => {
+    try {
+      await axiosApi.post("/api/auth/logout", {}, { withCredentials: true });
+      localStorage.removeItem("authToken");
+      router.push("/");
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   return (
     <Box sx={{ display: "flex", height: "100vh" }}>
       {/* HEADER */}
@@ -37,9 +63,27 @@ export default function LayoutContent({ children }: LayoutContentProps) {
           <Typography variant="h6" sx={{ fontWeight: "bold" }}>
             EASYCAD
           </Typography>
-          <IconButton color="inherit" aria-label="user profile">
+          <IconButton
+            color="inherit"
+            aria-label="user profile"
+            onClick={handleClick}
+          >
             <AccountCircleIcon sx={{ fontSize: 40 }} />
           </IconButton>
+          <Menu
+            id="basic-menu"
+            anchorEl={anchorEl}
+            open={open}
+            onClose={handleClose}
+            slotProps={{
+              list: {
+                "aria-labelledby": "basic-button",
+              },
+            }}
+          >
+            <MenuItem onClick={handleClose}>Perfil</MenuItem>
+            <MenuItem onClick={handleLogout}>Logout</MenuItem>
+          </Menu>
         </Toolbar>
       </AppBar>
 

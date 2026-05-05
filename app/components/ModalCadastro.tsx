@@ -5,6 +5,7 @@ import Grid from "@mui/material/Grid"; // Usando Grid2 para suporte ao 'size' do
 import CloseIcon from "@mui/icons-material/Close";
 import { z } from "zod";
 import { backendUrl } from "../lib/api";
+import axios from "axios";
 
 import {
   maskCPF,
@@ -27,7 +28,10 @@ import {
   Button,
   Snackbar,
   Alert,
+  CircularProgress,
+  Box,
 } from "@mui/material";
+import axiosApi from "../axios";
 
 interface ModalProps {
   isOpen: boolean;
@@ -97,25 +101,26 @@ const userSchema = z.object({
 });
 
 export default function ModalCadastro({ isOpen, onClose }: ModalProps) {
+  const [formIsLoading, setFormIsLoading] = useState(false);
   const initialState: UserForm = {
-    nome: "",
-    cpf: "",
-    nascimento: "",
-    rg: "",
-    sexo: "",
-    estadoCivil: "",
-    pais: "",
-    estado: "",
-    cidade: "",
-    bairro: "",
-    cep: "",
-    logradouro: "",
-    numero: "",
-    complemento: "",
-    celular: "",
-    fixo: "",
-    email: "",
-    linkedin: "",
+    nome: "testetste",
+    cpf: "607.512.240-06",
+    nascimento: "29/06/2004",
+    rg: "607.512.240-06",
+    sexo: "M",
+    estadoCivil: "S",
+    pais: "teste",
+    estado: "ts",
+    cidade: "test",
+    bairro: "tesladiario",
+    cep: "00000-000",
+    logradouro: "alameda teste",
+    numero: "09999",
+    complemento: "test do test",
+    celular: "11 99999-9999",
+    fixo: "00000-0000",
+    email: "test@test.com",
+    linkedin: "https://www.linkedin.com/in/teste",
   };
 
   const [form, setForm] = useState<UserForm>(initialState);
@@ -154,25 +159,33 @@ export default function ModalCadastro({ isOpen, onClose }: ModalProps) {
 
   const handleSalvar = async () => {
     // Impede o salvamento se houver erros (incluindo CPF falso)
+    setFormIsLoading(true);
     if (!validateForm()) {
       showSnackbar("Verifique os campos obrigatórios ou inválidos.", "warning");
+      setFormIsLoading(false);
       return;
     }
 
     try {
-      const res = await fetch(backendUrl("/api/contatos"), {
-        method: "POST",
+      const res = await axiosApi.post(backendUrl("/api/users"), payload, {
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error();
-
       showSnackbar("Usuário criado com sucesso.", "success");
-      setTimeout(() => onClose(true), 1500);
-    } catch {
+      onClose(true);
+      setFormIsLoading(false);
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        console.error(
+          "Erro na requisição:",
+          error.response?.data || error.message,
+        );
+      } else {
+        console.error("Erro inesperado:", error);
+      }
       showSnackbar("Erro ao criar usuário no servidor.", "error");
     }
+    setFormIsLoading(false);
   };
 
   const formatarData = (data: string) => {
@@ -220,254 +233,279 @@ export default function ModalCadastro({ isOpen, onClose }: ModalProps) {
         open={isOpen}
         onClose={() => onClose(false)}
         fullWidth
-        maxWidth="lg"
+        maxWidth={!formIsLoading ? "lg" : "xs"}
         scroll="paper"
       >
-        <DialogTitle sx={{ background: "#1A4173", color: "#fff", mb: 2 }}>
-          NOVO USUÁRIO
-          <IconButton
-            onClick={() => onClose(false)}
-            sx={{ position: "absolute", right: 8, top: 8, color: "#fff" }}
-          >
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-
-        <DialogContent dividers>
-          <Typography
-            variant="subtitle1"
-            sx={{ mb: 2, fontWeight: "bold", color: "#1A4173" }}
-          >
-            Dados Pessoais
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 8 }}>
-              <TextField
-                fullWidth
-                label="Nome Completo"
-                value={form.nome}
-                {...getErrorProps("nome")}
-                onChange={(e) =>
-                  handleChange("nome", maskApenasLetras(e.target.value))
-                }
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 4 }}>
-              <TextField
-                fullWidth
-                label="CPF"
-                value={form.cpf}
-                {...getErrorProps("cpf")}
-                onChange={(e) => handleChange("cpf", maskCPF(e.target.value))}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 4 }}>
-              <TextField
-                fullWidth
-                label="RG (Opcional)"
-                value={form.rg}
-                onChange={(e) =>
-                  handleChange("rg", maskApenasNumeros(e.target.value))
-                }
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 4 }}>
-              <TextField
-                fullWidth
-                type="date"
-                value={form.nascimento}
-                {...getErrorProps("nascimento")}
-                onChange={(e) => handleChange("nascimento", e.target.value)}
-                slotProps={{
-                  htmlInput: {
-                    placeholder: "Data de Nascimento",
-                  },
-                }}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 2 }}>
-              <TextField
-                select
-                fullWidth
-                label="Sexo"
-                value={form.sexo}
-                {...getErrorProps("sexo")}
-                onChange={(e) => handleChange("sexo", e.target.value)}
+        {!formIsLoading ? (
+          <>
+            <DialogTitle sx={{ background: "#1A4173", color: "#fff", mb: 2 }}>
+              NOVO USUÁRIO
+              <IconButton
+                onClick={() => onClose(false)}
+                sx={{ position: "absolute", right: 8, top: 8, color: "#fff" }}
               >
-                <MenuItem value="Masculino">Masculino</MenuItem>
-                <MenuItem value="Feminino">Feminino</MenuItem>
-              </TextField>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 2 }}>
-              <TextField
-                select
-                fullWidth
-                label="Est. Civil"
-                value={form.estadoCivil}
-                {...getErrorProps("estadoCivil")}
-                onChange={(e) => handleChange("estadoCivil", e.target.value)}
+                <CloseIcon />
+              </IconButton>
+            </DialogTitle>
+
+            <DialogContent dividers>
+              <Typography
+                variant="subtitle1"
+                sx={{ mb: 2, fontWeight: "bold", color: "#1A4173" }}
               >
-                <MenuItem value="Solteiro(a)">Solteiro(a)</MenuItem>
-                <MenuItem value="Casado(a)">Casado(a)</MenuItem>
-                <MenuItem value="Viúvo(a)">Viúvo(a)</MenuItem>
-              </TextField>
-            </Grid>
-            <Grid size={{ xs: 12, sm: 4 }}>
-              <TextField
-                fullWidth
-                label="E-mail"
-                placeholder="exemplo@email.com"
-                value={form.email}
-                {...getErrorProps("email")}
-                onChange={(e) => handleChange("email", e.target.value)}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 2 }}>
-              <TextField
-                fullWidth
-                label="Celular"
-                value={form.celular}
-                {...getErrorProps("celular")}
-                onChange={(e) =>
-                  handleChange("celular", maskTelefone(e.target.value))
-                }
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 2 }}>
-              <TextField
-                fullWidth
-                label="Fixo (Opcional)"
-                value={form.fixo}
-                onChange={(e) =>
-                  handleChange("fixo", maskTelefone(e.target.value))
-                }
-              />
-            </Grid>
-          </Grid>
+                Dados Pessoais
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, sm: 8 }}>
+                  <TextField
+                    fullWidth
+                    label="Nome Completo"
+                    value={form.nome}
+                    {...getErrorProps("nome")}
+                    onChange={(e) =>
+                      handleChange("nome", maskApenasLetras(e.target.value))
+                    }
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <TextField
+                    fullWidth
+                    label="CPF"
+                    value={form.cpf}
+                    {...getErrorProps("cpf")}
+                    onChange={(e) =>
+                      handleChange("cpf", maskCPF(e.target.value))
+                    }
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <TextField
+                    fullWidth
+                    label="RG (Opcional)"
+                    value={form.rg}
+                    onChange={(e) =>
+                      handleChange("rg", maskApenasNumeros(e.target.value))
+                    }
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <TextField
+                    fullWidth
+                    type="date"
+                    value={form.nascimento}
+                    {...getErrorProps("nascimento")}
+                    onChange={(e) => handleChange("nascimento", e.target.value)}
+                    slotProps={{
+                      htmlInput: {
+                        placeholder: "Data de Nascimento",
+                      },
+                    }}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 2 }}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Sexo"
+                    value={form.sexo}
+                    {...getErrorProps("sexo")}
+                    onChange={(e) => handleChange("sexo", e.target.value)}
+                  >
+                    <MenuItem value="Masculino">Masculino</MenuItem>
+                    <MenuItem value="Feminino">Feminino</MenuItem>
+                  </TextField>
+                </Grid>
+                <Grid size={{ xs: 12, sm: 2 }}>
+                  <TextField
+                    select
+                    fullWidth
+                    label="Est. Civil"
+                    value={form.estadoCivil}
+                    {...getErrorProps("estadoCivil")}
+                    onChange={(e) =>
+                      handleChange("estadoCivil", e.target.value)
+                    }
+                  >
+                    <MenuItem value="Solteiro(a)">Solteiro(a)</MenuItem>
+                    <MenuItem value="Casado(a)">Casado(a)</MenuItem>
+                    <MenuItem value="Viúvo(a)">Viúvo(a)</MenuItem>
+                  </TextField>
+                </Grid>
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <TextField
+                    fullWidth
+                    label="E-mail"
+                    placeholder="exemplo@email.com"
+                    value={form.email}
+                    {...getErrorProps("email")}
+                    onChange={(e) => handleChange("email", e.target.value)}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <TextField
+                    fullWidth
+                    label="Celular"
+                    value={form.celular}
+                    {...getErrorProps("celular")}
+                    onChange={(e) =>
+                      handleChange("celular", maskTelefone(e.target.value))
+                    }
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <TextField
+                    fullWidth
+                    label="Fixo (Opcional)"
+                    value={form.fixo}
+                    onChange={(e) =>
+                      handleChange("fixo", maskTelefone(e.target.value))
+                    }
+                  />
+                </Grid>
+              </Grid>
 
-          <Divider sx={{ my: 3 }} />
+              <Divider sx={{ my: 3 }} />
 
-          <Typography
-            variant="subtitle1"
-            sx={{ mb: 2, fontWeight: "bold", color: "#1A4173" }}
-          >
-            Endereço
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 2 }}>
-              <TextField
-                fullWidth
-                label="CEP"
-                value={form.cep}
-                {...getErrorProps("cep")}
-                onChange={(e) => handleChange("cep", maskCEP(e.target.value))}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 5 }}>
-              <TextField
-                fullWidth
-                label="Logradouro"
-                value={form.logradouro}
-                {...getErrorProps("logradouro")}
-                onChange={(e) => handleChange("logradouro", e.target.value)}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 1 }}>
-              <TextField
-                fullWidth
-                label="Nº"
-                value={form.numero}
-                {...getErrorProps("numero")}
-                onChange={(e) =>
-                  handleChange("numero", maskApenasNumeros(e.target.value))
-                }
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 4 }}>
-              <TextField
-                fullWidth
-                label="Bairro"
-                value={form.bairro}
-                {...getErrorProps("bairro")}
-                onChange={(e) => handleChange("bairro", e.target.value)}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 5 }}>
-              <TextField
-                fullWidth
-                label="Cidade"
-                value={form.cidade}
-                {...getErrorProps("cidade")}
-                onChange={(e) => handleChange("cidade", e.target.value)}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 3 }}>
-              <TextField
-                fullWidth
-                label="Estado"
-                value={form.estado}
-                {...getErrorProps("estado")}
-                onChange={(e) =>
-                  handleChange("estado", e.target.value.toUpperCase())
-                }
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 4 }}>
-              <TextField
-                fullWidth
-                label="Complemento (Opcional)"
-                value={form.complemento}
-                onChange={(e) => handleChange("complemento", e.target.value)}
-              />
-            </Grid>
-            <Grid size={{ xs: 12, sm: 4 }}>
-              <TextField
-                fullWidth
-                label="Pais"
-                value={form.pais}
-                {...getErrorProps("pais")}
-                onChange={(e) =>
-                  handleChange("pais", maskApenasLetras(e.target.value))
-                }
-              />
-            </Grid>
-          </Grid>
+              <Typography
+                variant="subtitle1"
+                sx={{ mb: 2, fontWeight: "bold", color: "#1A4173" }}
+              >
+                Endereço
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, sm: 2 }}>
+                  <TextField
+                    fullWidth
+                    label="CEP"
+                    value={form.cep}
+                    {...getErrorProps("cep")}
+                    onChange={(e) =>
+                      handleChange("cep", maskCEP(e.target.value))
+                    }
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 5 }}>
+                  <TextField
+                    fullWidth
+                    label="Logradouro"
+                    value={form.logradouro}
+                    {...getErrorProps("logradouro")}
+                    onChange={(e) => handleChange("logradouro", e.target.value)}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 1 }}>
+                  <TextField
+                    fullWidth
+                    label="Nº"
+                    value={form.numero}
+                    {...getErrorProps("numero")}
+                    onChange={(e) =>
+                      handleChange("numero", maskApenasNumeros(e.target.value))
+                    }
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <TextField
+                    fullWidth
+                    label="Bairro"
+                    value={form.bairro}
+                    {...getErrorProps("bairro")}
+                    onChange={(e) => handleChange("bairro", e.target.value)}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 5 }}>
+                  <TextField
+                    fullWidth
+                    label="Cidade"
+                    value={form.cidade}
+                    {...getErrorProps("cidade")}
+                    onChange={(e) => handleChange("cidade", e.target.value)}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 3 }}>
+                  <TextField
+                    fullWidth
+                    label="Estado"
+                    value={form.estado}
+                    {...getErrorProps("estado")}
+                    onChange={(e) =>
+                      handleChange("estado", e.target.value.toUpperCase())
+                    }
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <TextField
+                    fullWidth
+                    label="Complemento (Opcional)"
+                    value={form.complemento}
+                    onChange={(e) =>
+                      handleChange("complemento", e.target.value)
+                    }
+                  />
+                </Grid>
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <TextField
+                    fullWidth
+                    label="Pais"
+                    value={form.pais}
+                    {...getErrorProps("pais")}
+                    onChange={(e) =>
+                      handleChange("pais", maskApenasLetras(e.target.value))
+                    }
+                  />
+                </Grid>
+              </Grid>
 
-          <Divider sx={{ my: 3 }} />
-          <Typography
-            variant="subtitle1"
-            sx={{ mb: 2, fontWeight: "bold", color: "#1A4173" }}
-          >
-            Redes Sociais
-          </Typography>
-          <Grid container spacing={2}>
-            <Grid size={{ xs: 12, sm: 4 }}>
-              <TextField
-                fullWidth
-                label="LinkedIn"
-                value={form.linkedin}
-                onChange={(e) => handleChange("linkedin", e.target.value)}
-              />
-            </Grid>
-          </Grid>
-        </DialogContent>
+              <Divider sx={{ my: 3 }} />
+              <Typography
+                variant="subtitle1"
+                sx={{ mb: 2, fontWeight: "bold", color: "#1A4173" }}
+              >
+                Redes Sociais
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid size={{ xs: 12, sm: 4 }}>
+                  <TextField
+                    fullWidth
+                    label="LinkedIn"
+                    value={form.linkedin}
+                    onChange={(e) => handleChange("linkedin", e.target.value)}
+                  />
+                </Grid>
+              </Grid>
+            </DialogContent>
 
-        <DialogActions sx={{ p: 3 }}>
-          <Button
-            onClick={() => onClose(false)}
-            variant="outlined"
-            color="inherit"
+            <DialogActions sx={{ p: 3 }}>
+              <Button
+                onClick={() => onClose(false)}
+                variant="outlined"
+                color="inherit"
+              >
+                Cancelar
+              </Button>
+              <Button
+                onClick={handleSalvar}
+                variant="contained"
+                sx={{ background: "#1A4173" }}
+              >
+                Salvar Usuário
+              </Button>
+            </DialogActions>
+          </>
+        ) : (
+          <Box
+            sx={{
+              height: 100,
+              width: 50,
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              alignSelf: "center",
+            }}
           >
-            Cancelar
-          </Button>
-          <Button
-            onClick={handleSalvar}
-            variant="contained"
-            sx={{ background: "#1A4173" }}
-          >
-            Salvar Usuário
-          </Button>
-        </DialogActions>
+            <CircularProgress aria-label="Loading…" />
+          </Box>
+        )}
       </Dialog>
 
       <Snackbar

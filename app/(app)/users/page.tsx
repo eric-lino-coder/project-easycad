@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { Box, Paper, Pagination, Snackbar, Alert } from "@mui/material";
-import ModalCadastro from "../components/ModalCadastro";
-import ModalEditUser from "../components/ModalUpdateUser";
-import UserListHeader from "../components/UserListHeader";
-import UserListRows from "../components/UserListRows";
-import DeleteConfirmDialog from "../components/DeleteConfirmDialog";
-import { useUsuarios } from "../hooks/useUsuarios";
-import { Usuario, ModalMode } from "../types";
+import ModalCadastro from "../../components/ModalCadastro";
+import ModalEditUser from "../../components/ModalUpdateUser";
+import UserListHeader from "../../components/UserListHeader";
+import UserListRows from "../../components/UserListRows";
+import DeleteConfirmDialog from "../../components/DeleteConfirmDialog";
+import { useUsuarios } from "../../hooks/useUsuarios";
+import { Usuario, ModalMode } from "../../types";
 
 const ROWS_PER_PAGE = 10;
 

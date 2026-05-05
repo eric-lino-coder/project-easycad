@@ -5,6 +5,7 @@
 import { useState, useCallback } from "react";
 import { Usuario, SnackbarState } from "@/app/types";
 import { BACKEND_BASE_URL, backendUrl } from "@/app/lib/api";
+import axiosApi from "../axios";
 
 interface UseUsuariosReturn {
   usuarios: Usuario[];
@@ -35,14 +36,11 @@ export function useUsuarios(): UseUsuariosReturn {
         throw new Error(errorMsg);
       }
 
-      const apiUrl = backendUrl("/api/contatos");
-      console.log("📡 Buscando usuários em:", apiUrl);
+      const apiUrl = backendUrl("/api/users");
 
-      const response = await fetch(apiUrl, {
-        cache: "no-store",
-      });
+      const response = await axiosApi.get(apiUrl);
 
-      if (!response.ok) {
+      if (!response.data) {
         console.error(
           `❌ Erro ${response.status}:`,
           response.statusText,
@@ -54,9 +52,9 @@ export function useUsuarios(): UseUsuariosReturn {
         );
       }
 
-      const data = await response.json();
-      console.log("✅ Usuários carregados:", data.contatos?.length || 0);
-      setUsuarios(data.contatos || []);
+      const { data } = response;
+      console.log("✅ Usuários carregados:", data.users?.length || 0);
+      setUsuarios(data.users || []);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Erro desconhecido";
@@ -68,7 +66,7 @@ export function useUsuarios(): UseUsuariosReturn {
       console.log(
         "%c💡 Verifique:",
         "color: blue; font-weight: bold;",
-        "\n1. Backend está rodando? (npm run dev no projeto backend)\n2. .env.local tem NEXT_PUBLIC_BASE_URL_BACK_END correto?\n3. URL do backend está acessível?\n4. Endpoint /api/contatos existe?",
+        "\n1. Backend está rodando? (npm run dev no projeto backend)\n2. .env.local tem NEXT_PUBLIC_BASE_URL_BACK_END correto?\n3. URL do backend está acessível?\n4. Endpoint /api/users existe?",
       );
       setUsuarios([]);
       showSnackbar(`❌ Erro: ${errorMessage}`, "error");
@@ -80,14 +78,7 @@ export function useUsuarios(): UseUsuariosReturn {
   const excluirUsuario = useCallback(
     async (id: string) => {
       try {
-        const response = await fetch(backendUrl(`/api/contatos/${id}`), {
-          method: "DELETE",
-        });
-
-        if (!response.ok) {
-          const text = await response.text();
-          throw new Error(text || "Falha ao excluir usuário");
-        }
+        const response = await axiosApi.delete(backendUrl(`/api/users/${id}`));
 
         await carregarUsuarios();
         showSnackbar("Usuário excluído com sucesso", "success");
