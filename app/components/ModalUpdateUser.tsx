@@ -25,6 +25,7 @@ import {
   maskCPF,
   maskCEP,
   validarCPF,
+  maskCelular,
   maskTelefone,
   maskApenasLetras,
   maskApenasNumeros,
@@ -338,7 +339,7 @@ export default function ModalEditUser({ isOpen, onClose, usuario }: Props) {
                 value={form.celular || ""}
                 {...getErrorProps("celular")}
                 onChange={(e) =>
-                  handleChange("celular", maskTelefone(e.target.value))
+                  handleChange("celular", maskCelular(e.target.value))
                 }
               />
             </Grid>

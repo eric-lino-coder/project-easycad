@@ -81,7 +81,7 @@ export default function LayoutContent({ children }: LayoutContentProps) {
               },
             }}
           >
-            <MenuItem onClick={handleClose}>Profile</MenuItem>
+            <MenuItem onClick={handleClose}>Perfil</MenuItem>
             <MenuItem onClick={handleLogout}>Logout</MenuItem>
           </Menu>
         </Toolbar>
