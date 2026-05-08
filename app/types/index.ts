@@ -12,7 +12,12 @@ export interface Usuario {
   criado_em?: string;
   atualizado_em?: string;
 }
-
+export interface Role {
+  id: string;
+  name: string;
+  description: string;
+  is_active: string;
+}
 export interface ApiResponse<T> {
   success: boolean;
   data?: T;

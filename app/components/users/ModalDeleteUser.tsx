@@ -11,9 +11,9 @@ import {
   Alert,
 } from "@mui/material";
 import { useState } from "react";
-import { backendUrl } from "../lib/api";
+import { backendUrl } from "../../lib/api";
 import axios from "axios";
-import axiosApi from "../axios";
+import axiosApi from "../../axios";
 
 interface Props {
   isOpen: boolean;

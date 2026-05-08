@@ -20,7 +20,7 @@ import {
 import Grid from "@mui/material/Grid"; // Usando Grid para suporte ao 'size' do MUI v6
 import CloseIcon from "@mui/icons-material/Close";
 import { z } from "zod";
-import { backendUrl } from "../lib/api";
+import { backendUrl } from "../../lib/api";
 import {
   maskCPF,
   maskCEP,
@@ -29,8 +29,8 @@ import {
   maskTelefone,
   maskApenasLetras,
   maskApenasNumeros,
-} from "./masks";
-import axiosApi from "../axios";
+} from "../masks";
+import axiosApi from "../../axios";
 
 interface Props {
   isOpen: boolean;

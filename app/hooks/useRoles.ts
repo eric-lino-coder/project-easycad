@@ -3,22 +3,22 @@
  */
 
 import { useState, useCallback } from "react";
-import { Usuario, SnackbarState } from "@/app/types";
+import { Role, SnackbarState } from "@/app/types";
 import { BACKEND_BASE_URL, backendUrl } from "@/app/lib/api";
 import axiosApi from "../axios";
 
-interface UseUsuariosReturn {
-  usuarios: Usuario[];
+interface UseRolesReturn {
+  roles: Role[];
   loading: boolean;
   snackbar: SnackbarState;
-  carregarUsuarios: () => Promise<void>;
-  excluirUsuario: (id: string | number) => Promise<void>;
+  carregarRoles: () => Promise<void>;
+  excluirRole: (id: string) => Promise<void>;
   showSnackbar: (message: string, severity: SnackbarState["severity"]) => void;
   closeSnackbar: () => void;
 }
 
-export function useUsuarios(): UseUsuariosReturn {
-  const [usuarios, setUsuarios] = useState<Usuario[]>([]);
+export function useRoles(): UseRolesReturn {
+  const [roles, setRoles] = useState<Role[]>([]);
   const [loading, setLoading] = useState(true);
   const [snackbar, setSnackbar] = useState<SnackbarState>({
     open: false,
@@ -26,7 +26,7 @@ export function useUsuarios(): UseUsuariosReturn {
     severity: "success",
   });
 
-  const carregarUsuarios = useCallback(async () => {
+  const carregarRoles = useCallback(async () => {
     setLoading(true);
     try {
       if (!BACKEND_BASE_URL) {
@@ -36,7 +36,7 @@ export function useUsuarios(): UseUsuariosReturn {
         throw new Error(errorMsg);
       }
 
-      const apiUrl = backendUrl("/api/users");
+      const apiUrl = backendUrl("/api/roles");
 
       const response = await axiosApi.get(apiUrl);
 
@@ -53,41 +53,41 @@ export function useUsuarios(): UseUsuariosReturn {
       }
 
       const { data } = response;
-      console.log("✅ Usuários carregados:", data.users?.length || 0);
-      setUsuarios(data.users || []);
+      console.log("✅ Perfis carregados:", data.roles?.length || 0);
+      setRoles(data.roles || []);
     } catch (error) {
       const errorMessage =
         error instanceof Error ? error.message : "Erro desconhecido";
       console.error(
-        "%c❌ ERRO AO BUSCAR USUÁRIOS:",
+        "%c❌ ERRO AO BUSCAR PERFIS:",
         "color: red; font-weight: bold;",
         errorMessage,
       );
       console.log(
         "%c💡 Verifique:",
         "color: blue; font-weight: bold;",
-        "\n1. Backend está rodando? (npm run dev no projeto backend)\n2. .env.local tem NEXT_PUBLIC_BASE_URL_BACK_END correto?\n3. URL do backend está acessível?\n4. Endpoint /api/users existe?",
+        "\n1. Backend está rodando? (npm run dev no projeto backend)\n2. .env.local tem NEXT_PUBLIC_BASE_URL_BACK_END correto?\n3. URL do backend está acessível?\n4. Endpoint /api/roles existe?",
       );
-      setUsuarios([]);
+      setRoles([]);
       showSnackbar(`❌ Erro: ${errorMessage}`, "error");
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const excluirUsuario = useCallback(
-    async (id: string | number) => {
+  const excluirRole = useCallback(
+    async (id: string) => {
       try {
-        const response = await axiosApi.delete(backendUrl(`/api/users/${id}`));
+        const response = await axiosApi.delete(backendUrl(`/api/roles/${id}`));
 
-        await carregarUsuarios();
-        showSnackbar("Usuário excluído com sucesso", "success");
+        await carregarRoles();
+        showSnackbar("Perfil excluído com sucesso", "success");
       } catch (error) {
-        console.error("Erro ao excluir usuário:", error);
-        showSnackbar("Erro ao excluir usuário. Tente novamente.", "error");
+        console.error("Erro ao excluir perfil:", error);
+        showSnackbar("Erro ao excluir perfil. Tente novamente.", "error");
       }
     },
-    [carregarUsuarios],
+    [carregarRoles],
   );
 
   const showSnackbar = useCallback(
@@ -102,11 +102,11 @@ export function useUsuarios(): UseUsuariosReturn {
   }, []);
 
   return {
-    usuarios,
+    roles,
     loading,
     snackbar,
-    carregarUsuarios,
-    excluirUsuario,
+    carregarRoles,
+    excluirRole,
     showSnackbar,
     closeSnackbar,
   };

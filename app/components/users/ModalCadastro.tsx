@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Grid from "@mui/material/Grid"; // Usando Grid2 para suporte ao 'size' do MUI v6
 import CloseIcon from "@mui/icons-material/Close";
 import { z } from "zod";
-import { backendUrl } from "../lib/api";
+import { backendUrl } from "../../lib/api";
 import axios from "axios";
 
 import {
@@ -14,7 +14,7 @@ import {
   maskTelefone,
   maskApenasLetras,
   maskApenasNumeros,
-} from "./masks";
+} from "../masks";
 import {
   Dialog,
   DialogTitle,
@@ -31,7 +31,7 @@ import {
   CircularProgress,
   Box,
 } from "@mui/material";
-import axiosApi from "../axios";
+import axiosApi from "../../axios";
 
 interface ModalProps {
   isOpen: boolean;

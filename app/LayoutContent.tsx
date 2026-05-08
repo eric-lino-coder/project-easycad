@@ -1,12 +1,8 @@
 "use client";
 
-/**
- * Layout content with navigation structure
- * Client component that contains AppBar, Drawer, and main content area
- */
-
 import { ReactNode } from "react";
 import PeopleIcon from "@mui/icons-material/People";
+import BadgeIcon from "@mui/icons-material/Badge";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import {
   Box,
@@ -24,7 +20,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import axiosApi from "./axios";
 
 const DRAWER_WIDTH = 240;
@@ -35,6 +31,7 @@ interface LayoutContentProps {
 
 export default function LayoutContent({ children }: LayoutContentProps) {
   const router = useRouter();
+  const pathname = usePathname();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -102,11 +99,26 @@ export default function LayoutContent({ children }: LayoutContentProps) {
       >
         <List>
           <ListItem disablePadding>
-            <ListItemButton>
+            <ListItemButton
+              selected={pathname.startsWith("/users")}
+              onClick={() => router.push("/users")}
+            >
               <ListItemIcon>
                 <PeopleIcon />
               </ListItemIcon>
               <ListItemText primary="Usuários" />
+            </ListItemButton>
+          </ListItem>
+
+          <ListItem disablePadding>
+            <ListItemButton
+              selected={pathname.startsWith("/roles")}
+              onClick={() => router.push("/roles")}
+            >
+              <ListItemIcon>
+                <BadgeIcon />
+              </ListItemIcon>
+              <ListItemText primary="Perfil" />
             </ListItemButton>
           </ListItem>
         </List>
