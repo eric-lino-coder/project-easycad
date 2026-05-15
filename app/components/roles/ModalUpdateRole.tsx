@@ -1,19 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-import {
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions,
-  Button,
-  TextField,
-  Typography,
-  IconButton,
-  Snackbar,
-  Alert,
-} from "@mui/material";
+import { Dialog, Snackbar, Alert } from "@mui/material";
 
 import Grid from "@mui/material/Grid"; // Usando Grid para suporte ao 'size' do MUI v6
 import { string, uuid, z } from "zod";
@@ -40,18 +29,17 @@ const roleSchema = z.object({
 });
 
 export default function ModalEditRole({ isOpen, onClose, role }: Props) {
-  const [form, setForm] = useState<RoleForm>({
-    id: "",
-    name: "",
-    description: "",
-    is_active: true,
-  });
+  const [form, setForm] = useState<RoleForm>(role);
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: "",
     severity: "success" as "success" | "error" | "warning" | "info",
   });
+
+  useEffect(() => {
+    setForm(role);
+  }, []);
 
   const showSnackbar = (
     message: string,
@@ -121,7 +109,7 @@ export default function ModalEditRole({ isOpen, onClose, role }: Props) {
       >
         <ModalForm
           tituloModal={"EDITAR PERFIL"}
-          role={role}
+          role={form}
           onClose={onClose}
           form={form}
           getErrorProps={getErrorProps}

@@ -26,7 +26,7 @@ const roleSchema = z.object({
   description: z.string().min(20, "Descrição é Obrigatório"),
 });
 
-export default function ModalCreateRole({ isOpen, onClose, role }: Props) {
+export default function ModalCreateRole({ isOpen, onClose }: Props) {
   const [form, setForm] = useState<RoleForm>({
     name: "",
     description: "",
@@ -84,7 +84,8 @@ export default function ModalCreateRole({ isOpen, onClose, role }: Props) {
         },
       });
 
-      showSnackbar("Perfil atualizado com sucesso.", "success");
+      showSnackbar("Perfil criado com sucesso.", "success");
+      onClose(true);
     } catch (error) {
       console.error(error);
       showSnackbar("Erro ao atualizar perfil.", "error");
@@ -107,8 +108,8 @@ export default function ModalCreateRole({ isOpen, onClose, role }: Props) {
       >
         <ModalForm
           tituloModal={"EDITAR PERFIL"}
-          role={role}
-          onClose={onClose}
+          role={form}
+          onClose={() => onClose(false)}
           form={form}
           getErrorProps={getErrorProps}
           handleChange={handleChange}

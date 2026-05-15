@@ -55,7 +55,7 @@ const ModalForm: React.FC<any> = ({
             <TextField
               fullWidth
               label="Nome"
-              value={form.name || ""}
+              value={form?.name || ""}
               {...getErrorProps("name")}
               onChange={(e) => handleChange("name", e.target.value)}
             />
@@ -67,7 +67,7 @@ const ModalForm: React.FC<any> = ({
               multiline
               rows={5}
               label="Descrição"
-              value={form.description || ""}
+              value={form?.description || ""}
               {...getErrorProps("description")}
               onChange={(e) => handleChange("description", e.target.value)}
             />
