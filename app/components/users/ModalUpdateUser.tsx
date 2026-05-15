@@ -214,6 +214,7 @@ export default function ModalEditUser({ isOpen, onClose, usuario }: Props) {
       });
 
       showSnackbar("Usuário atualizado com sucesso.", "success");
+      onClose(false);
     } catch (error) {
       console.error(error);
       showSnackbar("Erro ao atualizar usuário.", "error");
